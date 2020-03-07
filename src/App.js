@@ -1,25 +1,26 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import './bootstrap.min.css';
+import { Container, Row, Col, CardDeck } from 'react-bootstrap'
+import CurrentRoster from './Components/CurrentRoster'
+import SignupForm from './Components/SignupForm'
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Row>
+        <Col>
+          <h1 style={{paddingBottom: 30, paddingTop: 30}}>Valkyrie Raid Signup</h1>
+            
+          <CurrentRoster />
+          <br />
+          <SignupForm />
+          
+        </Col>
+      </Row>
+  </Container>
   );
 }
 
