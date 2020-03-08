@@ -23,7 +23,7 @@ function NewRaid(props) {
         fetch('https://valkfunctionapp.azurewebsites.net/api/NewRaidHttpTrigger?code=OICDItKnH1WR5PCN2Ah7QXBZKHm6V41pHqMJmle5uQFwqIKA9OxPBg==', {
             method: 'post',
             body: JSON.stringify({ newRaid: { name: raidName, time: raidTime }})
-        }).then(() => window.location.href='/');
+        }).then(() => window.location.href='/#');
     };
 
     return (

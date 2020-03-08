@@ -70,6 +70,7 @@ function App() {
 
   const [raids, setRaids] = useState([]);
   const [attendants, setAttendants] = useState([]);
+  const [signalRattendants, setSignalRattendants] = useState([]);
 
   const [roster, setRoster] = useState([]);
 
@@ -88,7 +89,8 @@ function App() {
             hubConnect.on('signup', signup => {
               console.log('wtffffff');
                 console.log(signup);
-                setAttendants([...attendants, signup])
+                console.log(attendants);
+                setSignalRattendants([...signalRattendants, signup])
                 // const index = app.stocks.findIndex(s => s.id === updatedStock.id);
                 // app.stocks.splice(index, 1, updatedStock);
               });
@@ -122,11 +124,24 @@ function App() {
     
     fetchData();
   }, []);
+  
+  useEffect(() => {
+    async function fetchData() {
+    const res = await fetch("https://valkfunctionapp.azurewebsites.net/api/signups/?code=T0kvAdVilPpzsOGf4N/5afzgrH3OLj07PRiZBkx2A8rmL1sqgqMokQ==");
+    res.json().then(res => 
+        {
+            setAttendants([...attendants, ...res]);
+        });
+    }
+    
+    fetchData();
+  }, []);
 
   let addAttendant = (attendant) => {
+    let newAttendant = {...attendant, id: attendant.raidId + '-' + attendant.playerId };
     fetch('https://valkfunctionapp.azurewebsites.net/api/HttpTrigger2?code=TOQloRNRROMerkCid1/hKzZaqfyMD4PpZRluOQptDEVLk23vqGJrVA==', {
       method: 'post',
-      body: JSON.stringify({ signup: {...attendant, id: 1 }})
+      body: JSON.stringify({ signup: newAttendant})
     });
   };
 
@@ -136,7 +151,7 @@ function App() {
         <h1 style={{ paddingTop: 30 }}>Valkyrie Raid Signup</h1>
         <Switch>
           <Route path="/raids/:id">
-            <RaidDetails raids={raids} roles={roles} attendants={attendants} addAttendant={addAttendant} roster={roster}/>
+            <RaidDetails raids={raids} roles={roles} attendants={attendants} addAttendant={addAttendant} roster={roster} signalRattendants={signalRattendants}/>
           </Route>
           <Route path="/raids">
             <NewRaid raids={raids} roles={roles} attendants={attendants} addAttendant={addAttendant} roster={roster}/>

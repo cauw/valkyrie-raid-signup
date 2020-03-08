@@ -4,7 +4,7 @@ import { Container, Row, Col, Form, Button, Card, ListGroup } from 'react-bootst
 
 
 function SignupForm(props) {
-    let { addAttendant, roster, roles } = props;
+    let { addAttendant, roster, roles, raidId } = props;
     
     let [charName, setCharName] = useState('');
     let [filteredRoster, setFilteredRoster] = useState([...roster]);
@@ -35,7 +35,7 @@ function SignupForm(props) {
 
     let register = (r) => {
         setRegistered(true);
-        addAttendant(r);
+        addAttendant({raidId: raidId, playerId: r.id, role: r.role, name: r.name});
     };
 
     let signupCard;
