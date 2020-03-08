@@ -140,7 +140,7 @@ function App() {
     <Container>
       <Row>
         <Col>
-          <h1 style={{ paddingBottom: 30, paddingTop: 30 }}>Valkyrie Raid Signup</h1>
+          <h1 style={{ paddingBottom: 30, paddingTop: 30, textAlign: 'center' }}>Valkyrie Raid Signup</h1>
 
           <CurrentRoster roles={roles} attendants={attendants} />
           <br />
