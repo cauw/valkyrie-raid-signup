@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import './bootstrap.min.css';
 import { Container, Row, Col, CardDeck } from 'react-bootstrap'
 import CurrentRoster from './Components/CurrentRoster'
 import SignupForm from './Components/SignupForm'
+import { HubConnectionBuilder } from '@aspnet/signalr';
 
 
 function App() {
@@ -57,83 +58,56 @@ function App() {
     }
 ];
 
-  const [attendants, setAttendants] = useState([
-    {
-        role: 1,
-        name: 'Pingo'
-    },
-    {
-        role: 2,
-        name: 'Cauw'
-    },
-    {
-        role: 3,
-        name: 'Test'
-    },
-    {
-        role: 4,
-        name: 'Hey'
-    },
-    {
-        role: 4,
-        name: 'SomethingRandom'
-    },
-    {
-        role: 5,
-        name: 'Pingo'
-    },
-    {
-        role: 6,
-        name: 'Pingo'
-    },
-    {
-        role: 6,
-        name: 'Pingo'
-    },
-    {
-        role: 6,
-        name: 'Pingo'
-    },
-    {
-        role: 7,
-        name: 'Pingo'
-    },
-    {
-        role: 8,
-        name: 'Pingo'
-    },
-    {
-        role: 9,
-        name: 'Pingo'
-    }
-  ]);
+  const [attendants, setAttendants] = useState([]);
 
+  const [roster, setRoster] = useState([]);
 
-  const roster = [
-    {
-      name: 'Cauw',
-      role: 5
-    },    
-    {
-      name: 'Pingo',
-      role: 1
-    },    
-    {
-      name: 'Dernaus',
-      role: 3
-    },    
-    {
-      name: 'Vincenth',
-      role: 9
-    },    
-    {
-      name: 'Fork',
-      role: 5
+  const [hubConnection, setHubConnection] = useState();
+  // Set the Hub Connection on mount.
+   useEffect(() => {  
+
+       // Set the initial SignalR Hub Connection.
+       const createHubConnection = async () => {
+
+           // Build new Hub Connection, url is currently hard coded.
+           const hubConnect = new HubConnectionBuilder()
+               .withUrl('https://valkfunctionapp.azurewebsites.net/api/?code=J7zUKlRbxuTYmyPF0hJaPrdCBoelBLbcNPNOyMgfvD9dB88x/nyhmQ==')
+               .build();
+           try {
+            hubConnect.on('signup', signup => {
+              console.log('wtffffff');
+                console.log(signup);
+                setAttendants([...attendants, signup])
+                // const index = app.stocks.findIndex(s => s.id === updatedStock.id);
+                // app.stocks.splice(index, 1, updatedStock);
+              });
+               await hubConnect.start()
+               console.log('Connection successful!')
+           }
+           catch (err) {
+               alert(err);
+           }
+           
+           setHubConnection(hubConnect);
+       }
+
+       createHubConnection();
+   }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch("https://valkfunctionapp.azurewebsites.net/api/roster?code=rN8hYau2auc49dDfysfZzpzJn8NJSGNB1HoLXVKie12kM121q/cYaA==");
+      res.json().then(res => setRoster(res));
     }
-  ]
+    
+    fetchData();
+  }, []);
   
   let addAttendant = (attendant) => {
-    setAttendants([...attendants, attendant])
+    fetch('https://valkfunctionapp.azurewebsites.net/api/HttpTrigger2?code=TOQloRNRROMerkCid1/hKzZaqfyMD4PpZRluOQptDEVLk23vqGJrVA==', {
+      method: 'post',
+      body: JSON.stringify({ signup: {...attendant, id: 1 }})
+    });
   };
 
   return (
